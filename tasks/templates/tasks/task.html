@@ -1,0 +1,45 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+    <div class="container my-3">
+        <h1>Подробная информация о задаче</h1>
+        <table class="table table-striped">
+            <tr>
+                <th scope="row">ID:</th>
+                <td>{{ object.id }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Название:</th>
+                <td>{{ object.title }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Описание:</th>
+                <td>{{ object.description }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Статус:</th>
+                <td>
+                    {% if object.completed %}
+                        Завершено
+                    {% else %}
+                        Не завершено
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Дата начала:</th>
+                <td>{{ object.start_date }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Дедлайн:</th>
+                <td>{{ object.deadline }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Приоритет:</th>
+                <td>{{ object.priority }}</td>
+            </tr>
+        </table>
+        <hr />
+        <a href="{% url 'tasks:edit_task' object.id %}" class="btn btn-primary">Редактировать</a>
+    </div>
+{% endblock %}
