@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from tasks.forms import TaskForm
@@ -11,10 +12,14 @@ def index(request):
     context = {'tasks': tasks}
     return render(request, 'tasks/index.html', context)
 
+@login_required
 def task(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
+    if task.owner != request.user:
+        raise Http404
     return render(request, 'tasks/task.html', {'object': task})
 
+@login_required
 def create_task(request):
     if request.method == 'POST':
         form = TaskForm(request.POST)
@@ -27,6 +32,7 @@ def create_task(request):
         form = TaskForm()
     return render(request, 'tasks/create_task.html', {'form': form})
 
+@login_required
 def change_status(request, task_id):
     task = Task.objects.get(id=task_id)
     if task.owner != request.user:
@@ -38,6 +44,7 @@ def change_status(request, task_id):
             return JsonResponse({'status': 'success', 'completed': task.completed})
     return JsonResponse({'status': 'error'}, status=400)
 
+@login_required
 def delete_task(request, task_id):
     task = Task.objects.get(id=task_id)
     if task.owner != request.user:
@@ -46,6 +53,7 @@ def delete_task(request, task_id):
         task.delete()
     return redirect("/")
 
+@login_required
 def edit_task(request, task_id):
     task_entity = Task.objects.get(id=task_id)
     if task_entity.owner != request.user:
