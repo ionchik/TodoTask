@@ -1,9 +1,11 @@
 {% extends "tasks/base.html" %}
 {% block content %}
+<div class="container my-3">
     <form method="post" action="{% url 'users:register' %}">
         {% csrf_token %}
         {{ form.as_p }}
-        <button name="submit">register</button>
+        <button name="submit" class="btn btn-primary">создать аккаунт</button>
         <input type="hidden" name="next" value="{% url 'tasks:index' %}"/>
     </form>
+</div>
 {% endblock content %}
