@@ -1,45 +1,41 @@
 {% extends 'tasks/base.html' %}
 
 {% block content %}
-    <div class="container my-3">
-        <h1>Подробная информация о задаче</h1>
-        <table class="table table-striped">
-            <tr>
-                <th scope="row">ID:</th>
-                <td>{{ object.id }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Название:</th>
-                <td>{{ object.title }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Описание:</th>
-                <td>{{ object.description }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Статус:</th>
-                <td>
-                    {% if object.completed %}
-                        Завершено
-                    {% else %}
-                        Не завершено
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">Дата начала:</th>
-                <td>{{ object.start_date }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Дедлайн:</th>
-                <td>{{ object.deadline }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Приоритет:</th>
-                <td>{{ object.priority }}</td>
-            </tr>
-        </table>
-        <hr />
-        <a href="{% url 'tasks:edit_task' object.id %}" class="btn btn-primary">Редактировать</a>
+    <div class="container my-4">
+        <h1 class="mb-4">Детали задачи</h1>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ object.title }}</h5>
+                <p class="card-text">{{ object.description }}</p>
+                
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item">
+                        <strong>ID задачи:</strong> {{ object.id }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Статус:</strong> 
+                        {% if object.completed %}
+                            <span class="badge bg-success">Завершено</span>
+                        {% else %}
+                            <span class="badge bg-warning">Не завершено</span>
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Дата начала:</strong> {{ object.start_date }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Дедлайн:</strong> {{ object.deadline }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Приоритет:</strong>
+                        {% for i in "1"|repeat:object.priority %}
+                            <i class="bi bi-fire text-danger"></i>
+                        {% endfor %}
+                    </li>
+                </ul>
+
+                <a href="{% url 'tasks:edit_task' object.id %}" class="btn btn-primary">Редактировать</a>
+            </div>
+        </div>
     </div>
 {% endblock %}

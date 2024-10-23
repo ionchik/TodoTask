@@ -1,6 +1,12 @@
 {% extends "tasks/base.html" %}
+
 {% block content %}
-<div class="container my-3">
-  <p>You have been logged out.</p>
+<div class="container my-4">
+    <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">Вы вышли из системы</h4>
+        <p>Спасибо, что посетили наш Task Manager. Вы успешно вышли из своей учетной записи.</p>
+        <hr>
+        <p class="mb-0">Вы можете <a href="{% url 'users:login' %}" class="alert-link">войти снова</a> или вернуться на <a href="{% url 'tasks:index' %}" class="alert-link">главную страницу</a>.</p>
+    </div>
 </div>
-{% endblock content %}
+{% endblock %}

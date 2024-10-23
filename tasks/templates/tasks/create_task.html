@@ -10,3 +10,36 @@
         </form>
     </div>
 {% endblock %}
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+    <div class="container my-4">
+        <h1 class="mb-4">Создать задачу</h1>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <!-- Отображение формы с применением bootstrap5 классов -->
+                    <div class="mb-3">
+                        {{ form.non_field_errors }}
+                        {{ form.title.label_tag }}
+                        {{ form.title|bootstrap_field }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.description.label_tag }}
+                        {{ form.description|bootstrap_field }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.due_date.label_tag }}
+                        {{ form.due_date|bootstrap_field }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.priority.label_tag }}
+                        {{ form.priority|bootstrap_field }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Создать</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
