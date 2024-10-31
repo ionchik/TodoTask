@@ -1,12 +1,18 @@
 {% extends "tasks/base.html" %}
 
 {% block content %}
-<div class="container my-4">
-    <div class="alert alert-info" role="alert">
-        <h4 class="alert-heading">Вы вышли из системы</h4>
-        <p>Спасибо, что посетили наш Task Manager. Вы успешно вышли из своей учетной записи.</p>
-        <hr>
-        <p class="mb-0">Вы можете <a href="{% url 'users:login' %}" class="alert-link">войти снова</a> или вернуться на <a href="{% url 'tasks:index' %}" class="alert-link">главную страницу</a>.</p>
+<div class="container my-5">
+    <div class="card text-center shadow" style="border-radius: 15px; background-color: #f8f9fa;">
+        <div class="card-body">
+            <h2 class="card-title" style="color: #343a40;">Вы вышли из системы</h2>
+            <p class="card-text" style="color: #6c757d;">Спасибо, что использовали наш Task Manager!</p>
+            <p>
+                <i class="fas fa-sign-out-alt" style="font-size: 50px; color: #4a90e2;"></i>
+            </p>
+            <a href="{% url 'users:login' %}" class="btn btn-primary" style="border-radius: 30px; padding: 10px 20px; transition: background-color 0.3s;">
+                Вернуться на страницу входа
+            </a>
+        </div>
     </div>
 </div>
-{% endblock %}
+{% endblock content %}

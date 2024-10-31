@@ -1,6 +1,5 @@
 {% load django_bootstrap5 %}
 
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,102 +7,72 @@
     <title>Task Manager</title>
     {% bootstrap_css %}
     <style>
-        /* Кастомизация стиля для header */
-        .navbar {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #e0e0e0;
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        header {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
         .navbar-brand {
-            font-weight: 600;
             font-size: 1.5rem;
+            color: #4a90e2 !important;
         }
-
         .nav-link {
-            font-size: 1.1rem;
+            margin: 0 10px;
+            color: #343a40 !important;
+            transition: color 0.3s;
         }
-
-        /* Кастомизация для кнопок */
+        .nav-link:hover {
+            color: #4a90e2 !important;
+        }
+        .btn-primary {
+            background-color: #4a90e2;
+            border: none;
+        }
         .btn-outline-dark {
-            border-color: #343a40;
             color: #343a40;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            border-color: #343a40;
         }
-
         .btn-outline-dark:hover {
             background-color: #343a40;
             color: white;
         }
-
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.3);
-        }
-
-        /* Кастомизация отступов и теней */
-        .container {
-            margin-top: 20px;
-        }
-
-        .shadow-sm {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        }
-
-        /* Приветствие пользователя */
-        .user-greeting {
-            font-weight: 500;
-            color: #495057;
+        /* Добавляем стиль для выравнивания кнопки и текста */
+        .header-content {
+            display: flex;
+            align-items: center; /* Вертикальное выравнивание по центру */
+            justify-content: space-between; /* Пространство между элементами */
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-        <div class="container-fluid">
-            <!-- Логотип и переход на главную страницу -->
-            <a class="navbar-brand" href="{% url 'tasks:index' %}">Task Manager</a>
-            <!-- Кнопка для мобильных устройств -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <!-- Навигационное меню -->
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    {% if user.is_authenticated %}
-                        <!-- Приветствие и кнопка выхода -->
-                        <li class="nav-item">
-                            <span class="nav-link user-greeting">Hello, {{ user.username }}!</span>
-                        </li>
-                        <li class="nav-item">
-                            <form id="logout-form" action="{% url 'users:logout' %}" method="POST">
-                                {% csrf_token %}
-                                <button class="btn btn-outline-dark" type="submit">Log out</button>
-                            </form>
-                        </li>
-                    {% else %}
-                        <!-- Ссылка на регистрацию и кнопка входа -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:register' %}">Register</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-primary" href="{% url 'users:login' %}">Login</a>
-                        </li>
-                    {% endif %}
-                </ul>
+    {% if user.is_authenticated %}
+        <header class="bg-light py-3 px-3 mb-4 border-bottom shadow">
+            <div class="container header-content"> <!-- Обновленный класс -->
+                <a class="navbar-brand" href="{% url 'tasks:index' %}">Task Manager</a>
+                <div class="d-none d-md-inline">
+                    <span class="text-dark font-weight-bold">Hello, {{ user.username }}!</span>
+                </div>
+                <form id="logout-form" action="{% url 'users:logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-dark" type="submit">Log out</button>
+                </form>
             </div>
-        </div>
-    </nav>
-
-    <div class="container mt-4">
-        {% block content %}
-        {% endblock %}
-    </div>
-
+        </header>
+    {% else %}
+        <header class="bg-light py-3 px-3 mb-4 border-bottom shadow">
+            <div class="container d-flex justify-content-between align-items-center">
+                <a class="navbar-brand" href="{% url 'users:register' %}">Register</a>
+                <div class="nav-item d-none d-md-inline">
+                    <a class="btn btn-primary" href="{% url 'users:login' %}">Login</a>
+                </div>
+            </div>
+        </header>
+    {% endif %}
+    {% block content %}
+    {% endblock %}
     {% bootstrap_javascript %}
 </body>
 </html>

@@ -1,41 +1,109 @@
 {% extends 'tasks/base.html' %}
-{% load custom_filters %}
-{% block content %}
-    <div class="container my-4">
-        <h1 class="mb-4">Детали задачи</h1>
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">{{ object.title }}</h5>
-                <p class="card-text">{{ object.description }}</p>
-                
-                <ul class="list-group list-group-flush mb-4">
-                    <li class="list-group-item">
-                        <strong>ID задачи:</strong> {{ object.id }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Статус:</strong> 
-                        {% if object.completed %}
-                            <span class="badge bg-success">Завершено</span>
-                        {% else %}
-                            <span class="badge bg-warning">Не завершено</span>
-                        {% endif %}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Дата начала:</strong> {{ object.start_date }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Дедлайн:</strong> {{ object.deadline }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Приоритет:</strong>
-                        {% for i in "1"|repeat:object.priority %}
-                            <i class="bi bi-fire text-danger"></i>
-                        {% endfor %}
-                    </li>
-                </ul>
 
-                <a href="{% url 'tasks:edit_task' object.id %}" class="btn btn-primary">Редактировать</a>
+{% block content %}
+    <div class="container my-5">
+        <div class="card p-4" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); background-color: #f4f6f9;">
+            <h2 class="text-center mb-4" style="color: #343a40;">Задача #{{ object.id }}</h2>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-radius: 10px;">
+                        <div class="card-body">
+                            <h5><i class="fas fa-heading text-primary"></i> Название</h5>
+                            <p>{{ object.title }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-radius: 10px;">
+                        <div class="card-body">
+                            <h5><i class="fas fa-info-circle text-info"></i> Описание</h5>
+                            <p>{{ object.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-radius: 10px;">
+                        <div class="card-body">
+                            <h5><i class="fas fa-flag text-danger"></i> Приоритет</h5>
+                            <div>
+                                {% comment %} Отладочная информация: вывод текущего приоритета {% endcomment %}
+                                <p style="display: none;">Текущий приоритет: {{ object.priority }}</p>
+                                {% if object.priority == 3 %}
+                                    <span class="priority-indicator" style="background-color: red;"></span>
+                                    <span class="priority-indicator" style="background-color: red;"></span>
+                                    <span class="priority-indicator" style="background-color: red;"></span>
+                                {% elif object.priority == 2 %}
+                                    <span class="priority-indicator" style="background-color: orange;"></span>
+                                    <span class="priority-indicator" style="background-color: orange;"></span>
+                                {% elif object.priority == 1 %}
+                                    <span class="priority-indicator" style="background-color: green;"></span>
+                                {% else %}
+                                    <span class="priority-indicator" style="background-color: gray;"></span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-radius: 10px;">
+                        <div class="card-body">
+                            <h5><i class="fas fa-calendar-alt text-success"></i> Дата начала</h5>
+                            <p>{{ object.start_date }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-radius: 10px;">
+                        <div class="card-body">
+                            <h5><i class="fas fa-clock text-warning"></i> Дедлайн</h5>
+                            <p>{{ object.deadline }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-radius: 10px;">
+                        <div class="card-body text-center">
+                            <h5><i class="fas fa-tasks text-secondary"></i> Статус</h5>
+                            <p>
+                                {% if object.completed %}
+                                    <span class="badge bg-success" style="font-size: 1rem; padding: 0.6rem 1.2rem;">Завершено</span>
+                                {% else %}
+                                    <span class="badge bg-warning" style="font-size: 1rem; padding: 0.6rem 1.2rem;">Не завершено</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{% url 'tasks:edit_task' object.id %}" class="btn btn-primary px-4 py-2" style="background: linear-gradient(90deg, #4a90e2, #1a73e8); border: none; border-radius: 30px; transition: all 0.3s ease;">
+                    Редактировать
+                </a>
             </div>
         </div>
     </div>
+
+    <style>
+        .priority-indicator {
+            display: inline-block;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .priority-indicator:hover {
+            transform: scale(1.2);
+        }
+    </style>
 {% endblock %}

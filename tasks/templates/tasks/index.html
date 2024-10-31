@@ -1,72 +1,82 @@
 {% extends 'tasks/base.html' %}
-{% load custom_filters %}
 
 {% block content %}
     {% if user.is_authenticated %}
-    <div class="container my-4">
-        <h1 class="mb-4">Задачи</h1>
+    <div class="container my-5">
+        <h1 class="text-center" style="color: #343a40;">Задачи</h1>
         <div class="row">
             {% for task in tasks %}
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="card-title">{{ task.title }}</h5>
-                                <!-- Отображение приоритета с помощью "огоньков" -->
-                                <div class="priority-icons">
-                                    {% for i in "1"|repeat:task.priority %}
-                                        <i class="bi bi-fire text-danger"></i>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <p class="card-text">{{ task.description|truncatechars:50 }}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <input type="checkbox" class="task-status-toggle" data-task-id="{{ task.id }}" {% if task.completed %}checked{% endif %}>
-                                    <label>Выполнено</label>
-                                </div>
-                                <div>
-                                    <a href="{% url 'tasks:task' task.pk %}" class="btn btn-sm btn-outline-secondary">Подробнее</a>
-                                    <a href="{% url 'tasks:delete_task' task.id %}" class="btn btn-sm btn-outline-danger">Удалить</a>
-                                </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card task-card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); border-radius: 10px; transition: transform 0.2s;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ task.title }}</h5>
+                        <p class="card-text">{{ task.description|truncatechars:50 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <input type="checkbox" class="task-status-toggle" data-task-id="{{ task.id }}" {% if task.completed %}checked{% endif %}>
+                            <div>
+                                <a href="{% url 'tasks:delete_task' task.id %}" class="btn btn-sm btn-outline-danger">Удалить</a>
+                                <a href="{% url 'tasks:task' task.pk %}" class="btn btn-sm btn-outline-secondary">Подробнее</a>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
             {% empty %}
-                <p>У вас пока нет задач.</p>
+            <div class="col-12">
+                <div class="alert alert-info text-center" role="alert">
+                    У вас пока нет задач.
+                </div>
+            </div>
             {% endfor %}
         </div>
-        <hr />
-        <div class="my-3">
-            <a href="{% url 'tasks:create_task' %}" class="btn btn-primary">Создать задачу</a>
+
+        <div class="text-center my-4">
+            <a href="{% url 'tasks:create_task' %}" class="btn btn-primary" style="border-radius: 30px; transition: all 0.3s ease; padding: 10px 20px;">
+                Создать задачу
+            </a>
         </div>
     </div>
 
     <script>
         document.querySelectorAll('.task-status-toggle').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                const taskId = this.getAttribute('data-task-id');
-                fetch(`/${taskId}/change_status/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({status: this.checked})
-                }).then(response => {
-                    if (response.ok) {
-                        response.json().then(data => {
-                            if (data.completed) {
-                                checkbox.setAttribute('checked', 'checked');
-                            } else {
-                                checkbox.removeAttribute('checked');
-                            }
-                        });
-                    }
+          checkbox.addEventListener('change', function() {
+            const taskId = this.getAttribute('data-task-id');
+            fetch(`/${taskId}/change_status/`, {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({status: this.checked})
+            }).then(response => {
+              if (response.ok) {
+                response.json().then(data => {
+                  if (data.completed) {
+                    checkbox.setAttribute('checked', 'checked');
+                  } else {
+                    checkbox.removeAttribute('checked');
+                  }
                 });
+              }
             });
+          });
         });
     </script>
+
+    <style>
+        .task-card {
+            transition: transform 0.2s, box-shadow 0.2s; /* Плавный переход для карточек */
+        }
+
+        .task-card:hover {
+            transform: scale(1.05); /* Увеличение карточки при наведении */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Увеличение тени */
+        }
+
+        .alert {
+            border-radius: 10px; /* Скругление углов для предупреждения */
+        }
+    </style>
+
     {% endif %}
 {% endblock %}

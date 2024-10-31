@@ -1,34 +1,32 @@
 {% extends "tasks/base.html" %}
 
 {% block content %}
-<div class="container my-4">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h4 class="card-title text-center mb-4">Вход</h4>
-                    
-                    {% if form.errors %}
-                        <div class="alert alert-danger" role="alert">
-                            Ваш логин или пароль неверен. Пожалуйста, попробуйте снова.
-                        </div>
-                    {% endif %}
-
-                    <form method="post" action="{% url 'users:login' %}">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Войти</button>
-                        </div>
-                        <input type="hidden" name="next" value="{% url 'tasks:index' %}"/>
-                    </form>
-                    
-                    <div class="mt-3 text-center">
-                        <p>Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрироваться</a></p>
-                    </div>
+<div class="container my-5">
+    <div class="card shadow" style="border-radius: 15px; background-color: #f8f9fa;">
+        <div class="card-body">
+            <h2 class="card-title text-center" style="color: #343a40;">Вход в систему</h2>
+            {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    Ваше имя пользователя и пароль не совпадают. Пожалуйста, попробуйте снова.
                 </div>
+            {% endif %}
+            <form method="post" action="{% url 'users:login' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Имя пользователя</label>
+                    <input type="text" name="username" id="id_username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="id_password" class="form-label">Пароль</label>
+                    <input type="password" name="password" id="id_password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100" style="border-radius: 30px;">Войти</button>
+                <input type="hidden" name="next" value="{% url 'tasks:index' %}"/>
+            </form>
+            <div class="mt-3 text-center">
+                <p>Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрируйтесь здесь</a></p>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock content %}
