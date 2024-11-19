@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-%1tn@52m&t-#e$#q*#!i)8j7h)9ad28%^$5#)lqj36yx&com3x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ionchik-todotask-1c33.twc1.net']
+ALLOWED_HOSTS = ['ionchik-todotask-1c33.twc1.net', 'localhost']
 
 LOGIN_URL = '/users/login/'
 # Application definition
@@ -43,7 +43,8 @@ INSTALLED_APPS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://ionchik-todotask-1c33.twc1.net'
+    'https://ionchik-todotask-1c33.twc1.net',
+    'https://localhost'
 ]
 
 MIDDLEWARE = [

@@ -4,19 +4,29 @@
     {% if user.is_authenticated %}
     <div class="container my-5">
         <h1 class="text-center" style="color: #343a40;">Задачи</h1>
-        <div class="row">
+        <div class="row d-flex align-items-stretch">
             {% for task in tasks %}
             <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                <div class="card task-card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); border-radius: 10px; transition: transform 0.2s;">
+                <div class="card task-card" style="background: linear-gradient(145deg, #f9f9f9, #e0e0e0); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); border-radius: 12px; transition: transform 0.2s, box-shadow 0.2s; height: 100%; display: flex; flex-direction: column;">
                     <div class="card-body">
-                        <h5 class="card-title">{{ task.title }}</h5>
-                        <p class="card-text">{{ task.description|truncatechars:50 }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <input type="checkbox" class="task-status-toggle" data-task-id="{{ task.id }}" {% if task.completed %}checked{% endif %}>
-                            <div>
-                                <a href="{% url 'tasks:delete_task' task.id %}" class="btn btn-sm btn-outline-danger">Удалить</a>
-                                <a href="{% url 'tasks:task' task.pk %}" class="btn btn-sm btn-outline-secondary">Подробнее</a>
-                            </div>
+                        <h5 class="card-title" style="font-size: 1.25rem; font-weight: 600; color: {% if task.completed %} #28a745 {% else %} #343a40 {% endif %};">{{ task.title }}</h5>
+                        <p class="card-text" style="color: #6c757d; font-size: 0.95rem;">{{ task.description|truncatechars:50 }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-auto" style="padding: 12px; padding-top: 16px; padding-bottom: 16px;">
+                        <!-- Новый стиль чекбокса с улучшенной визуализацией -->
+                        <label class="task-status-toggle-container d-flex align-items-center">
+                            <input type="checkbox" class="task-status-toggle" id="task-{{ task.id }}" data-task-id="{{ task.id }}" {% if task.completed %}checked{% endif %}>
+                            <span class="checkmark"></span>
+                        </label>
+
+                        <!-- Кнопки: Удалить и Подробнее -->
+                        <div class="btn-group d-flex gap-2" role="group">
+                            <a href="{% url 'tasks:delete_task' task.id %}" class="btn btn-sm btn-outline-danger text-nowrap" title="Удалить задачу">
+                                <i class="bi bi-trash"></i> Удалить
+                            </a>
+                            <a href="{% url 'tasks:task' task.pk %}" class="btn btn-sm btn-outline-secondary text-nowrap" title="Подробнее">
+                                <i class="bi bi-info-circle"></i> Подробнее
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -31,50 +41,153 @@
         </div>
 
         <div class="text-center my-4">
-            <a href="{% url 'tasks:create_task' %}" class="btn btn-primary" style="border-radius: 30px; transition: all 0.3s ease; padding: 10px 20px;">
-                Создать задачу
+            <a href="{% url 'tasks:create_task' %}" class="btn btn-primary" style="border-radius: 30px; padding: 14px 35px;" title="Создать новую задачу">
+                <i class="bi bi-plus-circle"></i> Создать задачу
             </a>
         </div>
     </div>
 
     <script>
         document.querySelectorAll('.task-status-toggle').forEach(function(checkbox) {
-          checkbox.addEventListener('change', function() {
-            const taskId = this.getAttribute('data-task-id');
-            fetch(`/${taskId}/change_status/`, {
-              method: 'POST',
-              headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({status: this.checked})
-            }).then(response => {
-              if (response.ok) {
-                response.json().then(data => {
-                  if (data.completed) {
-                    checkbox.setAttribute('checked', 'checked');
-                  } else {
-                    checkbox.removeAttribute('checked');
-                  }
+            checkbox.addEventListener('change', function() {
+                const taskId = this.getAttribute('data-task-id');
+                const isChecked = this.checked;
+
+                fetch(`/${taskId}/change_status/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({status: isChecked})
+                }).then(response => {
+                    if (response.ok) {
+                        response.json().then(data => {
+                            const cardTitle = checkbox.closest('.card-body').querySelector('.card-title');
+                            if (data.completed) {
+                                cardTitle.style.color = '#28a745'; // Зеленый для завершенной задачи
+                            } else {
+                                cardTitle.style.color = '#343a40'; // Стандартный цвет для активной задачи
+                            }
+                        });
+                    }
                 });
-              }
             });
-          });
         });
     </script>
 
     <style>
         .task-card {
-            transition: transform 0.2s, box-shadow 0.2s; /* Плавный переход для карточек */
+            background: linear-gradient(145deg, #f9f9f9, #e0e0e0);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         .task-card:hover {
-            transform: scale(1.05); /* Увеличение карточки при наведении */
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Увеличение тени */
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-body {
+            flex-grow: 1; /* Контент будет растягиваться, чтобы кнопки всегда оставались снизу */
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
         }
 
         .alert {
-            border-radius: 10px; /* Скругление углов для предупреждения */
+            border-radius: 10px;
+        }
+
+        .btn-group .btn {
+            font-size: 0.9rem;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-group .btn:hover {
+            background-color: #f0f0f0; /* Изменили на более нейтральный оттенок */
+            color: #333; /* Убираем белый цвет текста при наведении */
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-radius: 30px;
+            padding: 14px 35px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .task-status-toggle-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .task-status-toggle {
+            display: none;
+        }
+
+        .task-status-toggle + .checkmark {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #6c757d;
+            background-color: #fff;
+            position: relative;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .task-status-toggle:checked + .checkmark {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .task-status-toggle:checked + .checkmark:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Адаптивный режим для мобильных устройств */
+        @media (max-width: 768px) {
+            .task-card {
+                padding: 10px;
+            }
+
+            .btn-group {
+                display: flex;
+                justify-content: space-between;
+                gap: 5px; /* Меньшее расстояние между кнопками */
+            }
+
+            .task-status-toggle + .checkmark {
+                width: 20px;
+                height: 20px;
+            }
+
+            .task-card:hover {
+                transform: translateY(0);
+                box-shadow: none;
+            }
         }
     </style>
 
