@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'ionchik-todotask-1c33.twc1.net'
+    'https://ionchik-todotask-1c33.twc1.net'
 ]
 
 MIDDLEWARE = [
