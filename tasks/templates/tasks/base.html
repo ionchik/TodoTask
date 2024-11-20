@@ -1,106 +1,165 @@
 {% load django_bootstrap5 %}
 
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager</title>
+    <title>Менеджер задач</title>
     {% bootstrap_css %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #4a90e2;
+            --primary-hover: #357ABD;
+            --background-light: #f7f7f7;
+            --text-dark: #333;
+            --transition-fast: 0.3s ease;
+            --radius: 10px;
+            --btn-radius: 30px;
+        }
+
         body {
-            background-color: #f4f6f9;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background-light);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
         }
+
         header {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            background-color: #ffffff;
+            border-radius: var(--radius);
         }
+
         .navbar-brand {
-            font-size: 1.7rem;
-            color: #4a90e2 !important;
-            font-weight: bold;
-            transition: transform 0.3s ease;
+            font-size: 1.8rem;
+            color: var(--primary-color) !important;
+            font-weight: 600;
+            transition: transform var(--transition-fast), color var(--transition-fast);
         }
+
         .navbar-brand:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
+            color: var(--primary-hover) !important;
         }
+
+        .nav-link, .btn-primary, .btn-outline-dark {
+            font-weight: 500;
+            border-radius: var(--btn-radius);
+            height: 45px;
+            padding: 10px 20px;
+            transition: transform var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+        }
+
         .nav-link {
-            color: #343a40 !important;
-            transition: color 0.3s, transform 0.3s;
+            color: var(--text-dark) !important;
         }
+
         .nav-link:hover {
-            color: #4a90e2 !important;
-            transform: scale(1.1);
+            color: var(--primary-color) !important;
+            background-color: rgba(74, 144, 226, 0.1);
+            transform: scale(1.05);
         }
+
         .btn-primary {
-            background-color: #4a90e2;
+            background-color: var(--primary-color);
             border: none;
         }
-        .btn-outline-dark {
-            color: #343a40;
-            border-color: #343a40;
-            transition: background-color 0.3s, color 0.3s;
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: scale(1.05);
         }
+
+        .btn-outline-dark {
+            color: var(--text-dark);
+            border-color: var(--primary-color);
+        }
+
         .btn-outline-dark:hover {
-            background-color: #343a40;
-            color: white;
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .welcome-logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #eaf3ff;
+            padding: 10px 20px;
+            border-radius: var(--btn-radius);
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .welcome-logout-btn:hover {
+            background-color: #d0e8ff;
+            transform: scale(1.05);
+        }
+
+        .welcome-logout-btn span {
+            font-size: 1rem;
+            color: var(--primary-color);
+        }
+
+        .welcome-logout-btn i {
+            color: var(--primary-color);
+            margin-left: 10px;
+            font-size: 18px;
         }
 
         /* Мобильная версия */
         @media (max-width: 768px) {
             .navbar-brand {
-                font-size: 1.5rem;
+                font-size: 1.6rem;
                 text-align: center;
-                margin: 0;
-                padding: 0;
             }
+
             .navbar-nav {
-                text-align: center;
+                justify-content: center;
             }
+
+            .btn-primary, .btn-outline-dark {
+                width: 100%;
+                margin-bottom: 15px; /* Отступ между кнопками на мобильных устройствах */
+            }
+
+            /* Убираем отступ между кнопками в бургер-меню */
+            .navbar-nav .nav-item {
+                margin-bottom: 0 !important;
+            }
+
+            .btn-outline-dark {
+                margin-bottom: 0; /* Убираем отступ у последней кнопки */
+            }
+        }
+
+        /* Десктопная версия */
+        @media (min-width: 769px) {
             .nav-item {
-                margin-top: 10px;
+                margin-right: 15px; /* Отступ между кнопками на десктопах */
             }
-            .header-content {
-                text-align: center;
-            }
-        }
-
-        /* Анимация для кнопки-бургера */
-        .navbar-toggler-icon {
-            transition: transform 0.3s ease;
-        }
-        .navbar-toggler-icon.collapsed {
-            transform: rotate(0deg);
-        }
-        .navbar-toggler-icon:not(.collapsed) {
-            transform: rotate(90deg);
-        }
-
-        /* Добавляем отступы между кнопками */
-        .btn-spacing {
-            margin-right: 10px; /* Отступ между кнопками */
         }
     </style>
 </head>
 <body>
     {% if user.is_authenticated %}
-        <header class="bg-light py-3 mb-4 border-bottom shadow">
+        <header>
             <div class="container-fluid">
                 <nav class="navbar navbar-expand-lg navbar-light">
-                    <a class="navbar-brand" href="{% url 'tasks:index' %}">Task Manager</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <a class="navbar-brand" href="{% url 'tasks:index' %}">Менеджер задач</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ms-auto">
-                            <li class="nav-item d-none d-md-inline">
-                                <span class="navbar-text text-dark">Hello, {{ user.username }}!</span>
-                            </li>
                             <li class="nav-item">
-                                <form id="logout-form" action="{% url 'users:logout' %}" method="POST">
-                                    {% csrf_token %}
-                                    <button class="btn btn-outline-dark" type="submit"><i class="fas fa-sign-out-alt"></i> Log out</button>
-                                </form>
+                                <div class="welcome-logout-btn" onclick="logoutFunction()">
+                                    <span>Привет, {{ user.username }}!</span>
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -108,20 +167,24 @@
             </div>
         </header>
     {% else %}
-        <header class="bg-light py-3 mb-4 border-bottom shadow">
+        <header>
             <div class="container-fluid">
                 <nav class="navbar navbar-expand-lg navbar-light">
-                    <a class="navbar-brand" href="{% url 'tasks:index' %}">Task Manager</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <a class="navbar-brand" href="{% url 'tasks:index' %}">Менеджер задач</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item">
-                                <a class="btn btn-primary btn-spacing" href="{% url 'users:login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                                <a class="btn btn-primary" href="{% url 'users:login' %}">
+                                    <i class="fas fa-sign-in-alt"></i> Войти
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-outline-dark" href="{% url 'users:register' %}"><i class="fas fa-user-plus"></i> Register</a>
+                                <a class="btn btn-outline-dark" href="{% url 'users:register' %}">
+                                    <i class="fas fa-user-plus"></i> Регистрация
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -129,8 +192,21 @@
             </div>
         </header>
     {% endif %}
-    {% block content %}
-    {% endblock %}
+
+    {% block content %}{% endblock %}
+
+    <script>
+        function logoutFunction() {
+            if (confirm("Вы уверены, что хотите выйти?")) {
+                document.getElementById("logout-form").submit();
+            }
+        }
+    </script>
+
+    <form id="logout-form" action="{% url 'users:logout' %}" method="POST" style="display: none;">
+        {% csrf_token %}
+    </form>
+
     {% bootstrap_javascript %}
 </body>
 </html>

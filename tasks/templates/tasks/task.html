@@ -2,12 +2,12 @@
 
 {% block content %}
     <div class="container my-5">
-        <div class="card p-4" style="border-radius: 15px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); background-color: #f4f6f9;">
-            <h2 class="text-center mb-4" style="color: #343a40;">Задача #{{ object.id }}</h2>
+        <div class="card p-4" style="border-radius: 12px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); background-color: #f4f6f9;">
+            <h2 class="text-center mb-4" style="color: #343a40; font-weight: bold;">Задача #{{ object.id }}</h2>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <div class="card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-radius: 10px;">
+                    <div class="card shadow-sm" style="border-radius: 12px; height: 100%;">
                         <div class="card-body">
                             <h5><i class="fas fa-heading text-primary"></i> Название</h5>
                             <p>{{ object.title }}</p>
@@ -15,10 +15,12 @@
                     </div>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <div class="card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-radius: 10px;">
-                        <div class="card-body">
+                    <div class="card shadow-sm" style="border-radius: 12px; height: 100%;">
+                        <div class="card-body d-flex flex-column">
                             <h5><i class="fas fa-info-circle text-info"></i> Описание</h5>
-                            <p>{{ object.description }}</p>
+                            <div class="task-description">
+                                <p>{{ object.description }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -26,30 +28,22 @@
 
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <div class="card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-radius: 10px;">
+                    <div class="card shadow-sm" style="border-radius: 12px;">
                         <div class="card-body">
                             <h5><i class="fas fa-flag text-danger"></i> Приоритет</h5>
-                            <div>
-                                {% comment %} Отладочная информация: вывод текущего приоритета {% endcomment %}
-                                <p style="display: none;">Текущий приоритет: {{ object.priority }}</p>
-                                {% if object.priority == 3 %}
-                                    <span class="priority-indicator" style="background-color: red;"></span>
-                                    <span class="priority-indicator" style="background-color: red;"></span>
-                                    <span class="priority-indicator" style="background-color: red;"></span>
-                                {% elif object.priority == 2 %}
-                                    <span class="priority-indicator" style="background-color: orange;"></span>
-                                    <span class="priority-indicator" style="background-color: orange;"></span>
-                                {% elif object.priority == 1 %}
-                                    <span class="priority-indicator" style="background-color: green;"></span>
-                                {% else %}
-                                    <span class="priority-indicator" style="background-color: gray;"></span>
-                                {% endif %}
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {% if object.priority == 3 %}100{% elif object.priority == 2 %}50{% else %}25{% endif %}%; 
+                                            background-color: {% if object.priority == 3 %}#dc3545{% elif object.priority == 2 %}#fd7e14{% else %}#28a745{% endif %};" 
+                                     aria-valuenow="{% if object.priority == 3 %}100{% elif object.priority == 2 %}50{% else %}25{% endif %}" 
+                                     aria-valuemin="0" aria-valuemax="100">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <div class="card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-radius: 10px;">
+                    <div class="card shadow-sm" style="border-radius: 12px;">
                         <div class="card-body">
                             <h5><i class="fas fa-calendar-alt text-success"></i> Дата начала</h5>
                             <p>{{ object.start_date }}</p>
@@ -57,7 +51,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <div class="card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-radius: 10px;">
+                    <div class="card shadow-sm" style="border-radius: 12px;">
                         <div class="card-body">
                             <h5><i class="fas fa-clock text-warning"></i> Дедлайн</h5>
                             <p>{{ object.deadline }}</p>
@@ -66,16 +60,21 @@
                 </div>
             </div>
 
+            <!-- Статус задачи -->
             <div class="row mb-4">
                 <div class="col-md-12">
-                    <div class="card" style="border: none; background: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-radius: 10px;">
+                    <div class="card shadow-sm" style="border-radius: 12px;">
                         <div class="card-body text-center">
                             <h5><i class="fas fa-tasks text-secondary"></i> Статус</h5>
                             <p>
                                 {% if object.completed %}
-                                    <span class="badge bg-success" style="font-size: 1rem; padding: 0.6rem 1.2rem;">Завершено</span>
+                                    <span class="badge badge-status badge-success">
+                                        <i class="fas fa-check-circle"></i> Завершено
+                                    </span>
                                 {% else %}
-                                    <span class="badge bg-warning" style="font-size: 1rem; padding: 0.6rem 1.2rem;">Не завершено</span>
+                                    <span class="badge badge-status badge-warning">
+                                        <i class="fas fa-exclamation-circle"></i> Не завершено
+                                    </span>
                                 {% endif %}
                             </p>
                         </div>
@@ -84,7 +83,7 @@
             </div>
 
             <div class="text-center mt-4">
-                <a href="{% url 'tasks:edit_task' object.id %}" class="btn btn-primary px-4 py-2" style="background: linear-gradient(90deg, #4a90e2, #1a73e8); border: none; border-radius: 30px; transition: all 0.3s ease;">
+                <a href="{% url 'tasks:edit_task' object.id %}" class="btn btn-primary px-4 py-2">
                     Редактировать
                 </a>
             </div>
@@ -93,17 +92,95 @@
 
     <style>
         .priority-indicator {
-            display: inline-block;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
 
-        .priority-indicator:hover {
-            transform: scale(1.2);
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-body {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .task-description {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: 150px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #5c6bc0, #3f51b5);
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #3f51b5, #5c6bc0);
+            transform: scale(1.05);
+        }
+
+        .badge-status {
+            font-weight: bold;
+            text-transform: capitalize;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            color: #fff; /* Устанавливаем белый цвет текста по умолчанию */
+        }
+
+        .badge-status.badge-success {
+            background-color: #28a745;
+        }
+
+        .badge-status.badge-warning {
+            background-color: #ffc107;
+        }
+
+        .badge-status:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .btn-primary {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .row > .col-md-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+                margin-bottom: 1rem;
+            }
         }
     </style>
 {% endblock %}

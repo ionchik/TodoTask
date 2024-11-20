@@ -7,22 +7,28 @@
     <div class="row mt-4 g-4">
         {% for task in tasks %}
         <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card shadow-sm task-card h-100" style="border-radius: 15px; transition: transform 0.3s;">
+            <div class="card task-card shadow-sm h-100" style="border-radius: 15px;">
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title text-truncate" style="color: {% if task.completed %}#28a745{% else %}#343a40{% endif %};">
+                    <h5 class="card-title text-truncate fw-semibold" 
+                        style="color: {% if task.completed %}#28a745{% else %}#343a40{% endif %};">
                         {{ task.title }}
                     </h5>
-                    <p class="card-text text-secondary mb-3" style="font-size: 0.9rem;">{{ task.description|truncatechars:60 }}</p>
+                    <p class="card-text text-secondary mb-3 small">
+                        {{ task.description|truncatechars:60 }}
+                    </p>
                     <div class="mt-auto d-flex justify-content-between align-items-center">
-                        <label class="d-flex align-items-center" title="Изменить статус задачи">
-                            <input type="checkbox" class="task-status-toggle visually-hidden" id="task-{{ task.id }}" data-task-id="{{ task.id }}" {% if task.completed %}checked{% endif %}>
-                            <span class="checkmark"></span>
-                        </label>
-                        <div class="btn-group gap-2">
-                            <a href="{% url 'tasks:task' task.pk %}" class="btn btn-sm btn-outline-secondary" title="Подробнее">
+                        <div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="task-status-toggle" data-task-id="{{ task.id }}" 
+                                       {% if task.completed %}checked{% endif %}>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+                        <div class="btn-group">
+                            <a href="{% url 'tasks:task' task.pk %}" class="btn btn-sm btn-outline-secondary">
                                 <i class="bi bi-info-circle"></i> Подробнее
                             </a>
-                            <a href="{% url 'tasks:delete_task' task.id %}" class="btn btn-sm btn-outline-danger" title="Удалить задачу">
+                            <a href="{% url 'tasks:delete_task' task.id %}" class="btn btn-sm btn-outline-danger">
                                 <i class="bi bi-trash"></i> Удалить
                             </a>
                         </div>
@@ -39,17 +45,17 @@
         {% endfor %}
     </div>
 
-    <!-- FAB кнопка для создания новой задачи -->
+    <!-- FAB кнопка с текстом "плюс" -->
     <div class="fab-container">
-        <a href="{% url 'tasks:create_task' %}" class="fab" title="Создать задачу">
-            <i class="bi bi-plus-circle"></i>
+        <a href="{% url 'tasks:create_task' %}" class="fab">
+            + <!-- Символ текста -->
         </a>
     </div>
 </div>
 
 <script>
-    document.querySelectorAll('.task-status-toggle').forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
+    document.querySelectorAll('.task-status-toggle').forEach((checkbox) => {
+        checkbox.addEventListener('change', function () {
             const taskId = this.dataset.taskId;
             const isChecked = this.checked;
 
@@ -73,38 +79,63 @@
 </script>
 
 <style>
+    /* Основные стили карточек */
+    .task-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
     .task-card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
-    .checkmark {
-        display: block;
-        width: 20px;
-        height: 20px;
-        border: 2px solid #6c757d;
-        border-radius: 50%;
-        background-color: #fff;
+    /* Переключатель статуса */
+    .toggle-switch {
         position: relative;
-        transition: all 0.3s ease;
+        display: inline-block;
+        width: 40px;
+        height: 20px;
     }
 
-    .task-status-toggle:checked + .checkmark {
-        background-color: #28a745;
-        border-color: #28a745;
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
     }
 
-    .task-status-toggle:checked + .checkmark:after {
-        content: '';
+    .switch-slider {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 10px;
-        height: 10px;
-        background-color: #fff;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        border-radius: 20px;
+        transition: all 0.3s;
     }
 
+    .toggle-switch input:checked + .switch-slider {
+        background-color: #28a745;
+    }
+
+    .switch-slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        border-radius: 50%;
+        transition: all 0.3s;
+    }
+
+    .toggle-switch input:checked + .switch-slider:before {
+        transform: translateX(20px);
+    }
+
+    /* FAB кнопка с текстом "+" */
     .fab-container {
         position: fixed;
         bottom: 20px;
@@ -118,12 +149,14 @@
         align-items: center;
         width: 60px;
         height: 60px;
-        border-radius: 50%;
         background-color: #007bff;
+        border-radius: 50%;
         color: #fff;
-        font-size: 24px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        font-size: 36px; /* Размер текста "+" */
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         transition: all 0.3s ease;
+        text-decoration: none;
     }
 
     .fab:hover {
@@ -131,7 +164,31 @@
         transform: scale(1.1);
     }
 
+    /* Стили кнопок */
+    .btn-outline-secondary, .btn-outline-danger {
+        border-radius: 20px;
+        padding: 6px 14px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #4a90e2;
+        color: #fff;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #e74c3c;
+        color: #fff;
+    }
+
+    /* Мобильная адаптивность */
     @media (max-width: 768px) {
+        .fab {
+            width: 50px;
+            height: 50px;
+            font-size: 30px; /* Размер текста "+" */
+        }
+
         .task-card {
             box-shadow: none;
         }
@@ -141,5 +198,6 @@
         }
     }
 </style>
+
 {% endif %}
 {% endblock %}
